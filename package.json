@@ -1,6 +1,6 @@
 {
   "name": "@timtou2020/ccsc",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Cross-platform CLI tool for CC Switch provider selection with interactive UI and team workflow support",
   "type": "module",
   "bin": {
