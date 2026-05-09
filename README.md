@@ -29,10 +29,68 @@ CCSC 通过以下方式解决这些问题：
 - 🖥️ **跨平台** - 支持 macOS、Linux、Windows
 - 📦 **易于安装** - 通过 npm/bun 安装，无外部依赖
 - 🔍 **交互式 UI** - 美观的终端界面，支持搜索和预览面板
+- ⚡ **直接指定** - 使用 `--provider` 参数跳过交互选择
 - 👀 **预览面板** - 选择前查看环境变量配置
 - 📜 **历史记录** - 最近使用的服务商排在前面
 - ⌨️ **键盘导航** - 完整的键盘支持，包括 Page Up/Down
 - 🔄 **参数透传** - 所有参数直接传递给 Claude CLI
+
+## 团队开发工作流（高级）
+
+CCSC 支持通过配置文件实现团队级多角色并行开发：
+
+### 配置文件
+
+创建 `~/.ai-team/projects.json`：
+
+```json
+{
+  "version": "1.0",
+  "projects": [
+    {
+      "name": "my-project",
+      "displayName": "我的项目",
+      "path": "C:\\Projects\\my-project",
+      "roles": [
+        {
+          "name": "backend",
+          "displayName": "后端开发",
+          "provider": "DeepSeek",
+          "description": "API、数据库、业务逻辑"
+        },
+        {
+          "name": "frontend",
+          "displayName": "前端开发",
+          "provider": "Kimi",
+          "description": "UI/UX、组件、交互"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 启动脚本
+
+使用 PowerShell 脚本一键启动团队：
+
+```powershell
+# 启动项目所有角色
+.\start-ai-team.ps1 -Project my-project
+
+# 启动单个角色
+.\start-ai-team.ps1 -Project my-project -Role backend
+
+# 查看可用项目
+.\start-ai-team.ps1 -List
+```
+
+每个角色在独立的 Windows Terminal 标签页中运行，使用指定的 AI 模型。
+
+**适用场景：**
+- 多角色并行开发（后端/前端/文档）
+- 不同角色使用不同 AI 模型优化成本
+- 团队标准化开发环境
 
 ## 前置要求
 
@@ -67,6 +125,26 @@ ccsc
 - **左侧面板**：服务商列表，支持搜索
 - **右侧面板**：选中服务商的环境变量预览
 
+### 直接指定服务商（跳过交互式选择）
+
+使用 `--provider` 参数直接指定服务商名称，无需交互式选择：
+
+```bash
+# 指定服务商名称（不区分大小写）
+ccsc --provider DeepSeek
+ccsc --provider Kimi
+ccsc --provider MiniMax
+
+# 结合其他 Claude 参数使用
+ccsc --provider DeepSeek --continue
+ccsc --provider Kimi --dangerously-skip-permissions
+```
+
+**适用场景：**
+- 脚本自动化启动（如团队开发工作流）
+- 快速启动常用服务商，无需交互选择
+- CI/CD 或自动化工具集成
+
 ### 键盘快捷键
 
 | 按键 | 功能 |
@@ -79,7 +157,7 @@ ccsc
 
 ### 传递参数给 Claude
 
-除 `-h`/`--help` 和 `-V`/`--version` 外，所有参数都直接传递给 Claude：
+除 `-h`/`--help`、`-V`/`--version` 和 `--provider` 外，所有参数都直接传递给 Claude：
 
 ```bash
 ccsc --continue

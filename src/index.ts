@@ -22,6 +22,7 @@ program
   .name('ccsc')
   .description('Cross-platform CLI for CC Switch provider selection')
   .version(pkg.version)
+  .option('--provider <name>', 'Specify provider by name (skips interactive selection)')
   .option('--clear', 'Clear all CCSC-generated settings files')
   .option('--cli <name>', 'Specify CLI tool to use (overrides CC_CLI_PATH env)')
   .allowUnknownOption()
@@ -40,12 +41,24 @@ program
         process.exit(0);
       }
 
+      // Extract --provider option
+      const providerOverride = options.provider;
       // Extract --cli option and remaining args
       const cliOverride = options.cli;
       const rawArgs = process.argv.slice(2).filter(
-        (arg) => arg !== '--clear' && !arg.startsWith('--cli') && arg !== cliOverride
+        (arg, index, arr) => {
+          // 跳過 --clear
+          if (arg === '--clear') return false;
+          // 跳過 --cli 及其值
+          if (arg.startsWith('--cli')) return false;
+          if (arg === cliOverride) return false;
+          // 跳過 --provider 及其值
+          if (arg.startsWith('--provider')) return false;
+          if (arg === providerOverride) return false;
+          return true;
+        }
       );
-      await main(rawArgs, cliOverride);
+      await main(rawArgs, cliOverride, providerOverride);
     } catch (error) {
       console.error(
         'Error:',
@@ -57,7 +70,7 @@ program
 
 program.parse();
 
-async function main(claudeArgs: string[], cliOverride?: string): Promise<void> {
+async function main(claudeArgs: string[], cliOverride?: string, providerName?: string): Promise<void> {
   if (!isDbAvailable()) {
     console.error('CC Switch database not found.');
     console.error(
@@ -74,22 +87,38 @@ async function main(claudeArgs: string[], cliOverride?: string): Promise<void> {
     process.exit(1);
   }
 
-  // Sort by history
-  const history = await loadHistory();
-  const sortedProviders = sortByHistory(providers, history);
-
-  // Render Ink UI and wait for selection
-  const selectedProvider = await new Promise<Provider>((resolve, reject) => {
-    const { unmount } = render(
-      React.createElement(App, {
-        providers: sortedProviders,
-        onSelect: (provider: Provider) => {
-          unmount();
-          resolve(provider);
-        },
-      })
+  // If provider name specified, find it directly
+  let selectedProvider: Provider;
+  if (providerName) {
+    const matched = providers.find(
+      (p) => p.name.toLowerCase() === providerName.toLowerCase()
     );
-  });
+    if (!matched) {
+      console.error(`Provider "${providerName}" not found.`);
+      console.error('Available providers:');
+      providers.forEach((p) => console.error(`  - ${p.name}`));
+      process.exit(1);
+    }
+    selectedProvider = matched;
+    console.log(`✓ Using provider: ${selectedProvider.name}`);
+  } else {
+    // Sort by history
+    const history = await loadHistory();
+    const sortedProviders = sortByHistory(providers, history);
+
+    // Render Ink UI and wait for selection
+    selectedProvider = await new Promise<Provider>((resolve, reject) => {
+      const { unmount } = render(
+        React.createElement(App, {
+          providers: sortedProviders,
+          onSelect: (provider: Provider) => {
+            unmount();
+            resolve(provider);
+          },
+        })
+      );
+    });
+  }
 
   // Save to history
   await saveToHistory(selectedProvider.name);
