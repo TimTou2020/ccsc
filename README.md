@@ -252,7 +252,7 @@ CCSC 支持通过配置文件实现团队级多角色并行开发：
 
 ### 启动脚本
 
-创建 `start-ai-team.ps1` 脚本（PowerShell）：
+项目中提供 `start-ai-team.ps1` 脚本（PowerShell），支持以下用法：
 
 ```powershell
 # 启动项目所有角色
