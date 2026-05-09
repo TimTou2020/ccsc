@@ -45,13 +45,13 @@ CCSC 通过以下方式解决这些问题：
 
 ```bash
 # npm
-npm install -g @terranc/ccsc
+npm install -g @timtou2020/ccsc
 
 # 或 bun
-bun install -g @terranc/ccsc
+bun install -g @timtou2020/ccsc
 
 # 或直接运行
-npx @terranc/ccsc
+npx @timtou2020/ccsc
 ```
 
 ## 使用方法
@@ -225,7 +225,7 @@ CCSC 支持通过配置文件实现团队级多角色并行开发：
 
 ```bash
 # 克隆仓库
-git clone https://github.com/terranc/ccsc.git
+git clone https://github.com/TimTou2020/ccsc.git
 cd ccsc
 
 # 安装依赖
