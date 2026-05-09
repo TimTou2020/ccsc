@@ -217,6 +217,67 @@ set CC_SWITCH_DB_PATH=C:\custom\path\cc-switch.db
 
 服务商使用历史存储在 `~/.ccsc-history`，最近使用的服务商会显示在列表顶部。
 
+## 团队开发工作流（高级）
+
+CCSC 支持通过配置文件实现团队级多角色并行开发：
+
+### 配置文件
+
+创建 `~/.ai-team/projects.json`：
+
+```json
+{
+  "projects": {
+    "my-project": {
+      "name": "我的项目",
+      "description": "项目描述",
+      "roles": {
+        "backend": {
+          "provider": "DeepSeek",
+          "workdir": "C:\\Projects\\my-project\\backend",
+          "title": "后端开发",
+          "description": "API、数据库、业务逻辑"
+        },
+        "frontend": {
+          "provider": "Kimi For Coding",
+          "workdir": "C:\\Projects\\my-project\\frontend",
+          "title": "前端开发",
+          "description": "UI/UX、组件、交互"
+        }
+      }
+    }
+  }
+}
+```
+
+### 启动脚本
+
+创建 `start-ai-team.ps1` 脚本（PowerShell）：
+
+```powershell
+# 启动项目所有角色
+.\start-ai-team.ps1 -Project my-project
+
+# 启动单个角色
+.\start-ai-team.ps1 -Project my-project -Role backend
+
+# 查看可用项目
+.\start-ai-team.ps1 -List
+```
+
+### 脚本特点
+
+- **Base64 编码命令**：避免 PowerShell 引号转义问题
+- **Windows Terminal 分頁**：每个角色独立窗口
+- **自动 cd 到工作目录**：启动后直接进入项目路径
+- **角色过滤**：支持启动单个角色或全部角色
+
+### 使用场景
+
+- 多角色并行开发（后端/前端/文档）
+- 不同角色使用不同 AI 模型优化成本
+- 团队标准化开发环境
+
 ## 开发
 
 ```bash
