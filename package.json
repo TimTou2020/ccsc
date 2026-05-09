@@ -1,7 +1,7 @@
 {
-  "name": "@terranc/ccsc",
-  "version": "1.0.8",
-  "description": "Cross-platform CLI tool for CC Switch provider selection with interactive UI",
+  "name": "@timtou2020/ccsc",
+  "version": "1.0.9",
+  "description": "Cross-platform CLI tool for CC Switch provider selection with interactive UI and team workflow support",
   "type": "module",
   "bin": {
     "ccsc": "dist/index.js"
@@ -9,7 +9,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "start-ai-team.ps1"
   ],
   "scripts": {
     "build": "tsc",
@@ -26,16 +27,16 @@
     "ai",
     "llm"
   ],
-  "author": "TerranChao",
+  "author": "TimTou2020",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/terranc/ccsc.git"
+    "url": "git+https://github.com/TimTou2020/ccsc.git"
   },
   "bugs": {
-    "url": "https://github.com/terranc/ccsc/issues"
+    "url": "https://github.com/TimTou2020/ccsc/issues"
   },
-  "homepage": "https://github.com/terranc/ccsc#readme",
+  "homepage": "https://github.com/TimTou2020/ccsc#readme",
   "dependencies": {
     "commander": "^13.1.0",
     "ink": "^6.8.0",
